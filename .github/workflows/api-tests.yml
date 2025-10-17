@@ -22,15 +22,19 @@ jobs:
         run: |
           npm install -g newman newman-reporter-htmlextra
 
+
       - name: Run Postman tests
         run: |
           newman run tests/collection.json \
             -r htmlextra \
-            --reporter-htmlextra-export report.html || true
+            --reporter-htmlextra-export report.html 2>&1 | tee newman.log
+          exit ${PIPESTATUS[0]}
 
-
-      - name: Upload HTML report
+      - name: Upload HTML report and log
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: postman-test-report
-          path: report.html
+          path: |
+            report.html
+            newman.log
