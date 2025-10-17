@@ -24,18 +24,20 @@ jobs:
 
       - name: Run Postman tests
         run: |
-          set -o pipefail
           newman run tests/collection.json \
-            -r htmlextra \
+            -r cli,htmlextra \
             --reporter-htmlextra-export report.html \
-            --reporter-cli-no-summary false \
-            --reporter-cli-no-failures false 2>&1 | tee newman.log
-        continue-on-error: false
+            2>&1 | tee newman-log.txt
+          exit ${PIPESTATUS[0]}
 
-      - name: Upload artifacts (HTML report and log)
+      - name: Upload HTML report
         uses: actions/upload-artifact@v4
         with:
-          name: postman-test-artifacts
-          path: |
-            report.html
-            newman.log
+          name: postman-test-report
+          path: report.html
+
+      - name: Upload Newman log
+        uses: actions/upload-artifact@v4
+        with:
+          name: postman-test-log
+          path: newman-log.txt
