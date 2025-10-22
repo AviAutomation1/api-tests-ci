@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: postman-test-report
-          path: report.html
+          path: reports/index.html
 
       - name: Upload Newman log
         if: always()
